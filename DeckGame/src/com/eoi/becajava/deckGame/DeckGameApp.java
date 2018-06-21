@@ -19,11 +19,12 @@ public class DeckGameApp {
 	}
 	
 	private static void showMenu() {
-		System.out.println("\nWhat do you want to do?\n1 - Shuffle\n2 - Next card\n3 - Cards left\n4 - Take n cards\n5 - Show stack\n6 - Show deck");
+		System.out.println("\nWhat do you want to do?\n\n1 - Shuffle\n2 - Next card\n3 - Cards left\n4 - Take n cards\n5 - Show stack\n6 - Show deck\n7 - Quit");
 		try {
 			dispatchMenu(sc.nextInt());
 		} catch (EmptyDeckException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			showMenu();
 		}
 	}
 
@@ -32,13 +33,15 @@ public class DeckGameApp {
 	}
 	
 	static void dispatchMenu(int option) throws EmptyDeckException {
+		int quit=0;
+		
 		switch(option) {
 		case 1:
 			deck.shuffle();
-			System.out.println("Deck shuffled.\n");//TODO Exception emptyDeck;
+			System.out.println("Deck shuffled.\n");
 			break;
 		case 2:
-			getCards(1);//TODO Exception emptyDeck
+			getCards(1);
 			break;
 		case 3:
 			cardsLeft();
@@ -48,32 +51,49 @@ public class DeckGameApp {
 			getCards(sc.nextInt());
 			break;
 		case 5:
-			stack.showDeck();//TODO Exception emptyDeck
+			stack.showDeck();
 			break;
 		case 6:
-			deck.showDeck();//TODO Exception emptyDeck
+			deck.showDeck();
+			break;
+		case 7:
+			System.out.println("Good bye!");
+			quit=1;
 			break;
 		}
-		showMenu();
+		if(quit==0) {
+			showMenu();
+		}
 	}
 	
 	static void cardsLeft() {
 		System.out.printf("You have %s cards left in the main deck.\n", deck.getDeck().size());
 	}
 	
-	static void getCards(int n) {
+	static void getCards(int n) throws EmptyDeckException {
 		Card card=null;
 		
-		if(n==1) {
-			card=deck.takeCard();
-			stack.getDeck().add(card);
-			
-			System.out.printf("Next card was the %s\n", card.toString());
+		if(deck.getDeck().size()<n) {
+			throw new EmptyDeckException("You don't have enough cards left.");
 		}else {
-			List<Card> sublist = deck.getDeck().subList(0, n);
 			
-			stack.getDeck().addAll(sublist);
-			deck.getDeck().removeAll(sublist);
+			if(n==1) {
+				card=deck.takeCard();
+				stack.getDeck().add(card);
+				
+				System.out.printf("Next card was the %s\n", card.toString());
+			}else {
+				List<Card> sublist = deck.getDeck().subList(0, n);
+				
+				System.out.println("Next cards were :\n");
+				for (Card nextCard : sublist) {
+					System.out.println(nextCard.toString());
+				}
+				
+				stack.getDeck().addAll(sublist);
+				deck.getDeck().removeAll(sublist);
+			}
+			
 		}
 	}
 

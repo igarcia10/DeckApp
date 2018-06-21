@@ -31,14 +31,22 @@ public class Deck {
 		
 	}
 	
-	public void showDeck() {
-		for (Card card : deck) {
-			System.out.println(card.toString());
+	public void showDeck() throws EmptyDeckException {
+		if(deck.isEmpty()) {
+			throw new EmptyDeckException("The deck is empty.");
+		}else {
+			for (Card card : deck) {
+				System.out.println(card.toString());
+			}
 		}
 	}
 	
-	public void shuffle() {
-		Collections.shuffle(deck);
+	public void shuffle() throws EmptyDeckException {
+		if(deck.isEmpty()) {
+			throw new EmptyDeckException("The deck is empty.");
+		}else {
+			Collections.shuffle(deck);
+		}
 	}
 	
 	public Card takeCard() {
